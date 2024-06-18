@@ -1,3 +1,7 @@
+# Acknowledgement
+
+## This data is provided by NASA according to the terms on this website: https://data.nasa.gov/Space-Science/Mars-orbital-image-HiRISE-labeled-data-set-version/egmv-36wq/about_data
+
 # Getting Started
 Prerequisites:
 Make sure you have Python and Jupyter Notebook installed on your system. If not, you can download Anaconda, which includes both Python and Jupyter Notebook.
