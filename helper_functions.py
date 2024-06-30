@@ -46,3 +46,39 @@ def generate_sample_means_w_threshold(dist, sample_num, size_threshold=30, rando
         if i >= size_threshold:
             sample_mu.append(np.mean(samples))
     return sample_mu
+
+def conditional_probability_calculator(data_frame, condition_column, condition_value, target_column, target_condition):
+    """
+    Calculate conditional probability P(target_condition | condition_column = condition_value)
+    
+    Parameters:
+    data_frame (pd.DataFrame): The DataFrame containing the data
+    condition_column (str): The column name for the condition
+    condition_value (str/int/float): The value for the condition
+    target_column (str): The column name for the target
+    target_condition (str): A string representing the condition for the target column (e.g., "> 40", "== 'Yes'")
+    
+    Returns:
+    float: The calculated conditional probability
+    """
+    # Filter the DataFrame based on the condition
+    condition_df = data_frame[data_frame[condition_column] == condition_value]
+    
+    # Count of rows meeting the condition
+    condition_count = len(condition_df)
+    
+    # Filter further based on the target condition
+    target_df = condition_df.query(f"{target_column} {target_condition}")
+    
+    # Count of rows meeting both conditions
+    target_count = len(target_df)
+    
+    # Calculate conditional probability
+    conditional_prob = target_count / condition_count if condition_count > 0 else 0
+    
+    return conditional_prob
+
+# Example usage:
+# p_over_40_given_first_class = conditional_probability_calculator(
+#     titanic, 'class', 'First', 'age', '> 40'
+# )
