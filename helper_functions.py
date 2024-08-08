@@ -1,7 +1,17 @@
 import numpy as np
 import pandas as pd
+
+# Plotting
 import matplotlib.pyplot as plt
+import seaborn as sns
+from mpl_toolkits import mplot3d
+
+# Stats
 from scipy.stats import uniform, norm
+
+# Clustering
+from sklearn.cluster import KMeans, DBSCAN
+
 
 # Function to generate sample means from a given distribution and range
 def generate_sample_means(dist, sample_num, random_state=None):
@@ -82,3 +92,39 @@ def conditional_probability_calculator(data_frame, condition_column, condition_v
 # p_over_40_given_first_class = conditional_probability_calculator(
 #     titanic, 'class', 'First', 'age', '> 40'
 # )
+
+
+def check_inertia_of_range_of_clusters(upper_n_limit, init_value, random_stat_val):
+    inertia_array = [] 
+    #for each value 1 - 10
+    for n in range(1,upper_n_limit):
+        #instantiate new KMeans instance
+        #Don't Forget to set the random_state!!!
+        #fit the model
+        kmeans_temp = KMeans(n_clusters=n, init=init_value, random_state=random_stat_val).fit(X)  
+        i = kmeans_temp.inertia_
+        #append inertia score to inertias list
+        inertia_array.append(i)
+        
+    return inertia_array
+
+# Example usage:
+# inertias = check_inertia_of_range_of_clusters(11, 'k-means++', 42)
+
+
+#examine the number of clusters created with 
+#each epsilon value. 
+#Plot the results
+def exampine_number_of_clusters_for_array_of_eps(epsilons):
+    n_clusters_list = []
+    for eps in epsilons:
+        db = DBSCAN(eps = eps).fit(X)
+        n_clusters = len(np.unique(db.labels_))
+        n_clusters_list.append(n_clusters)
+    plt.plot(epsilons, n_clusters_list)
+    plt.xlabel('Epsilon')
+    plt.ylabel('Number of Clusters')
+    plt.title('How the Number of Clusters varies with eps')
+    
+# Example usage:
+# exampine_number_of_clusters_for_array_of_eps(epsilons)
