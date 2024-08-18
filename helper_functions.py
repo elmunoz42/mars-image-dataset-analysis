@@ -178,7 +178,7 @@ def mae_loss(theta,x,y):
     """
     This function accepts an array of thetas
     and returns the mean absolute error based
-    on np.mean(|(theta*xi - yi)|)
+    on np.mean(|(theta*x - y)|)
     
     Arguments
     ---------
@@ -217,4 +217,26 @@ def huber_loss(theta, x, y, delta = 1.5):
     y_pred = theta * x
     y_err = np.abs(y-y_pred)
     return sum(np.where(y_err <= delta, 1/2*(y_err)**2, delta*(y_err - 1/2*delta)))
+
+def mse_for_different_degrees(X,y,range_low, range_stop):
+    mses = []
+    for i in range(range_low,range_stop):
+    #for 1, 2, 3, ..., 10
+
+        #create pipeline
+        pipeline = Pipeline([
+            ('features', PolynomialFeatures(degree=i, include_bias=False)),
+            ('model', LinearRegression())
+        ])
+        #fit pipeline
+        pipeline.fit(X,y)
+        #make predictions
+        predictions = pipeline.predict(X)
+        #compute mse
+        mse = mean_squared_error(y,predictions)
+        #append mse to mses
+        mses.append(mse)
+        
+    return mses
+
     
