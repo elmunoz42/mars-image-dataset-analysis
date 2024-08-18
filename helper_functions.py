@@ -239,7 +239,7 @@ def mse_for_different_degrees(X,y,range_low, range_stop):
         
     return mses
 
-def predictions_for_range_of_degrees(X, X_train, y, y_train, range_start, range_stop):
+def predictions_for_range_of_degrees(X_train, y_train, X_pred, range_start, range_stop):
     predictions = []
     #for 1, 2, 3, ..., 10
     for i in range(range_start, range_stop):
@@ -251,7 +251,7 @@ def predictions_for_range_of_degrees(X, X_train, y, y_train, range_start, range_
         #fit pipeline on training data
         pipe.fit(X_train, y_train)
         #make predictions on all data
-        preds = pipe.predict(X)
+        preds = pipe.predict(X_pred)
         #assign to model_predictions
         predictions.append(preds)
         
