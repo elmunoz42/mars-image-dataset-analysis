@@ -256,4 +256,61 @@ def predictions_for_range_of_degrees(X_train, y_train, X_pred, range_start, rang
         predictions.append(preds)
         
     return predictions
+
+def get_mse_for_test_and_val_on_lr_degrees(training_X, training_y, validation_X, validation_y, start, stop):
+    train_mses = []
+    test_mses = []
+
+    # For complexity from 'start' to 'stop':
+    for i in range(start, stop + 1):
+        # Create pipeline with PolynomialFeatures and LinearRegression
+        # Remember to set include_bias = False
+        pipe = Pipeline([
+            ('pfeat', PolynomialFeatures(degree=i, include_bias=False)),
+            ('linreg', LinearRegression())
+        ])
+        # Fit pipeline on training data
+        pipe.fit(training_X, training_y)
+        # Predict against training data
+        train_preds = pipe.predict(training_X)
+        # Predict against validation data
+        test_preds = pipe.predict(validation_X)
+        # MSE of training data
+        train_mses.append(mean_squared_error(training_y, train_preds))
+        # MSE of validation data
+        test_mses.append(mean_squared_error(validation_y, test_preds))
+
+    # Find the best model complexity based on the lowest validation MSE
+    best_model_complexity = np.argmin(test_mses) + start  # Adjusting for the range start
+
+    return train_mses, test_mses, best_model_complexity
+
+
+def simple_cross_validation(X_train, y_train, X_test, y_test, start, stop):
+    best_pipe = None  # Placeholder for the best model
+    best_mse = np.inf  # Set best mse to infinity to begin
+
+    # For complexity start to stop
+    for i in range(start, stop + 1):
+        # Create pipeline with PolynomialFeatures and LinearRegression
+        # Remember to set include_bias = False
+        pipe = Pipeline([
+            ('pfeat', PolynomialFeatures(degree=i, include_bias=False)),
+            ('linreg', LinearRegression())
+        ])
+        # Fit pipeline on training data
+        pipe.fit(X_train, y_train)
+        # Predict against test data
+        test_preds = pipe.predict(X_test)
+        # MSE of test data
+        test_mse = mean_squared_error(y_test, test_preds)
+
+        # If mse is the best so far, update best_mse and best_pipe
+        if test_mse < best_mse:
+            best_mse = test_mse
+            best_pipe = pipe
+
+    # Return the best pipeline
+    return best_pipe
+
     
