@@ -313,4 +313,19 @@ def simple_cross_validation(X_train, y_train, X_test, y_test, start, stop):
     # Return the best pipeline
     return best_pipe
 
+def find_highest_correlation_against_feature(data_frame, feature):
+    # Compute the correlation matrix
+    correlation_matrix = data_frame.corr()
+
+    # Get the correlation values for a given feature
+    feature_correlation = correlation_matrix[feature]
+
+    # Drop the original feature to avoid self-correlation
+    feature_correlation = feature_correlation.drop(feature)
+
+    # Sort the correlations
+    sorted_correlation = feature_correlation.sort_values(ascending=False)
+    
+    # Return the feature name of the highest correlating feature and the correlation value
+    return sorted_correlation.index[0], sorted_correlation.iloc[0]
     
