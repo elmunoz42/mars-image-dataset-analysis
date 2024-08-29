@@ -12,6 +12,14 @@ from scipy.stats import uniform, norm
 # Clustering
 from sklearn.cluster import KMeans, DBSCAN
 
+# Models, MSE, Pipelines
+from sklearn.linear_model import LinearRegression, Lasso, Ridge
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import SequentialFeatureSelector, SelectFromModel
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split, GridSearchCV
+
 
 # Function to generate sample means from a given distribution and range
 def generate_sample_means(dist, sample_num, random_state=None):
@@ -371,4 +379,12 @@ def create_test_and_train_dataframes(degree, features, X_train, X_test):
     # for both the training and test sets.
     return train_df, test_df
 
-    
+def compare_different_ridge_alphas(alphas, X_train, y_train):
+    # alphas is an array f.e. [0.001, 1.0, 10.0, 100.0]
+    coef_list = []
+    for alpha in alphas:
+        model = Ridge(alpha=alpha).fit(X_train, y_train)
+        model_coefs = model.coef_
+        coef_list.append(list(model_coefs))
+        
+    return coef_list
